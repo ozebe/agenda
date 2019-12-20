@@ -28,19 +28,19 @@ public class ColorirTabela extends DefaultTableCellRenderer {
         try {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             //formatadores
-            SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm");
             SimpleDateFormat formataData = new SimpleDateFormat("yyyy-MM-dd");
             
             //pega a linha correta, utilizando o rowSorter
             int linha = tableCompromissos.getRowSorter().convertRowIndexToModel(row);
             
             Date dateHoraBancoFormatada = formataHora.parse(compromissos.get(linha).getHora());
-            String horaBancoFormatada = new SimpleDateFormat("HH:mm:ss").format(dateHoraBancoFormatada);
+            String horaBancoFormatada = new SimpleDateFormat("HH:mm").format(dateHoraBancoFormatada);
 
             Date dateDataBancoFormatada = formataData.parse(compromissos.get(linha).getData());
             String dataBancoFormatada = new SimpleDateFormat("yyyy-MM-dd").format(dateDataBancoFormatada);
 
-            String horaAtualFormatada = new SimpleDateFormat("HH:mm:ss").format(new Date());
+            String horaAtualFormatada = new SimpleDateFormat("HH:mm").format(new Date());
             Date dateHoraAtualFormatada = formataHora.parse(horaAtualFormatada);
 
             String dataAtualFormatada = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -64,11 +64,11 @@ public class ColorirTabela extends DefaultTableCellRenderer {
                     //verde
                     c = new Color(121, 210, 121);
                 } else if (h > 0) {
-                    System.out.println(""+ horaAtualFormatada + " > " + horaBancoFormatada);
                     //vermelho
                     c = new Color(255, 77, 77);
                 } else if (h == 0) {
-                    c = Color.yellow;
+                    //amarelo
+                    c = new Color(255, 210, 77);
                 }
             }
 
