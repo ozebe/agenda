@@ -30,28 +30,43 @@ public class ColorirTabela extends DefaultTableCellRenderer {
             //formatadores
             SimpleDateFormat formataHora = new SimpleDateFormat("HH:mm");
             SimpleDateFormat formataData = new SimpleDateFormat("yyyy-MM-dd");
-            
+
             //pega a linha correta, utilizando o rowSorter
             int linha = tableCompromissos.getRowSorter().convertRowIndexToModel(row);
+
+            //data de inicio no banco------
+            Date dateHoraInicioBancoFormatada = formataHora.parse(compromissos.get(linha).getHora_inicio());
+            //String horaInicioBancoFormatada = new SimpleDateFormat("HH:mm").format(dateHoraInicioBancoFormatada);
+            //-----------------------------
             
-            Date dateHoraBancoFormatada = formataHora.parse(compromissos.get(linha).getHora());
-            String horaBancoFormatada = new SimpleDateFormat("HH:mm").format(dateHoraBancoFormatada);
+            //data final no banco----------
+            Date dateHoraFinalBancoFormatada = formataHora.parse(compromissos.get(linha).getHora_final());
+            //String horaFinalBancoFormatada = new SimpleDateFormat("HH:mm").format(dateHoraFinalBancoFormatada);
+            //-----------------------------
 
             Date dateDataBancoFormatada = formataData.parse(compromissos.get(linha).getData());
             String dataBancoFormatada = new SimpleDateFormat("yyyy-MM-dd").format(dateDataBancoFormatada);
 
+            //data e hora atual------------
             String horaAtualFormatada = new SimpleDateFormat("HH:mm").format(new Date());
             Date dateHoraAtualFormatada = formataHora.parse(horaAtualFormatada);
 
             String dataAtualFormatada = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
             Date dateDataAtualFormatada = formataData.parse(dataAtualFormatada);
+            //-----------------------------
 
             int d = dateDataAtualFormatada.compareTo(dateDataBancoFormatada);
-            int h = dateHoraAtualFormatada.compareTo(dateHoraBancoFormatada);
+            int hi = dateHoraAtualFormatada.compareTo(dateHoraInicioBancoFormatada);
+            int hf = dateHoraAtualFormatada.compareTo(dateHoraFinalBancoFormatada);
             //dataAtual.comparteTo(dataBanco)
             //dataAtual igual a dataBanco = 0
             //dataAtual antes de dataBanco = <0
             //dataAtual depois de dataBanco = >0
+
+//            Date min, max;   // assume these are set to something
+//            Date d;          // the date in question
+//
+//            return d.after(min) && d.before(max);
             Color c = Color.WHITE;
             if (d < 0) {
                 //verde
@@ -60,14 +75,14 @@ public class ColorirTabela extends DefaultTableCellRenderer {
                 //vermelho
                 c = new Color(255, 77, 77);
             } else if (d == 0) {
-                if (h < 0) {
-                    //verde
+                if ((hi < 0) && (hf < 0)) {
+                    //verde, caso esteja antes do horario de inicio e fim
                     c = new Color(121, 210, 121);
-                } else if (h > 0) {
-                    //vermelho
+                } else if ((hi > 0 ) && (hf > 0)) {
+                    //vermelho, caso esteja depois do horario de inicio e fim
                     c = new Color(255, 77, 77);
-                } else if (h == 0) {
-                    //amarelo
+                } else if (((hi == 0) || (hi > 0)) && ((hf == 0) || (hf < 0))) {
+                    //amarelo, caso esteja entre o horario de inicio e fim
                     c = new Color(255, 210, 77);
                 }
             }
