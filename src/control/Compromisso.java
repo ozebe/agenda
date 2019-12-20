@@ -5,7 +5,8 @@ public class Compromisso {
     private int id;
     private int idUsuario;
     private String data;
-    private String hora;
+    private String hora_inicio;
+    private String hora_final;
     private String descricao;
     private String criado;
     private String editado;
@@ -58,13 +59,23 @@ public class Compromisso {
         this.editado = editado;
     }
 
-    public String getHora() {
-        return hora;
+    public String getHora_inicio() {
+        return hora_inicio;
     }
 
-    public void setHora(String hora) {
-        this.hora = hora;
+    public void setHora_inicio(String hora_inicio) {
+        this.hora_inicio = hora_inicio;
     }
+
+    public String getHora_final() {
+        return hora_final;
+    }
+
+    public void setHora_final(String hora_final) {
+        this.hora_final = hora_final;
+    }
+
+    
     
     
     

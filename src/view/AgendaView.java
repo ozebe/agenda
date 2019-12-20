@@ -10,6 +10,8 @@ import control.ConnectionFactory;
 import control.INI;
 import control.NivelAcesso;
 import control.Usuario;
+import java.awt.Color;
+import java.awt.Component;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,11 +20,11 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.TableRowSorter;
+import model.ColorirTabela;
 import model.CompromissosTableModel;
 
 /**
@@ -58,6 +60,7 @@ public class AgendaView extends javax.swing.JFrame {
         initComponents();
         userLabel.setText(this.userLogado.getUsuario());
         //criaTable();
+        
     }
 
     /**
@@ -100,6 +103,7 @@ public class AgendaView extends javax.swing.JFrame {
         tableCompromissos.setRowSorter(sorter);
         tableCompromissos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tableCompromissos);
+        tableCompromissos.setDefaultRenderer(Object.class, new ColorirTabela());
 
         novoBtn.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         novoBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/images/add.png"))); // NOI18N
@@ -217,7 +221,7 @@ public class AgendaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Favor selecionar um compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             linha = tableCompromissos.getRowSorter().convertRowIndexToModel(linha);
-            System.out.println("h -> " + compromissos.get(linha).getHora() + " id -> " + compromissos.get(linha).getId());
+            System.out.println("h -> " + compromissos.get(linha).getHora_inicio()+ " id -> " + compromissos.get(linha).getId());
         }
 //        try {
 //            carregaNiveisAcesso();
@@ -294,6 +298,7 @@ public class AgendaView extends javax.swing.JFrame {
             public void run() {
                 try {
                     new AgendaView().setVisible(true);
+                  
                 } catch (ClassNotFoundException | SQLException | IOException ex) {
                     JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
@@ -310,14 +315,14 @@ public class AgendaView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     public static javax.swing.JButton novoBtn;
-    private javax.swing.JTable tableCompromissos;
+    public static javax.swing.JTable tableCompromissos;
     private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 
     public void criaTable() throws ClassNotFoundException, SQLException, IOException {
         connection = fabrica.getConnection(db.getDir(), user.getDir(), password.getDir());
 
-        PreparedStatement stmt = connection.prepareStatement("select * from compromisso as c where c.data_comp = ? and c.idusuario = ? order by c.hora ");
+        PreparedStatement stmt = connection.prepareStatement("select * from compromisso as c where c.data_comp = ? and c.idusuario = ? order by c.hora_inicio ");
 
         java.sql.Date sDate = convertUtilToSql(calendario.getDate());
         stmt.setDate(1, sDate);
@@ -338,7 +343,8 @@ public class AgendaView extends javax.swing.JFrame {
             c.setData(resultSet.getString("data_comp"));
             c.setDescricao(resultSet.getString("descricao"));
             c.setEditado(formataTimestamp(resultSet.getTimestamp("editado")));
-            c.setHora(resultSet.getString("hora"));
+            c.setHora_inicio(resultSet.getString("hora_inicio"));
+            c.setHora_final(resultSet.getString("hora_final"));
             c.setId(resultSet.getInt("id"));
             c.setIdUsuario(resultSet.getInt("idUsuario"));
 

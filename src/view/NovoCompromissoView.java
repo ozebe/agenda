@@ -39,7 +39,7 @@ public class NovoCompromissoView extends javax.swing.JFrame {
     private static ConnectionFactory fabrica = new ConnectionFactory();
 
     JSpinner.DateEditor de;
-
+    JSpinner.DateEditor de2;
     /**
      * Creates new form NovoCompromissoView
      *
@@ -68,6 +68,10 @@ public class NovoCompromissoView extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         texto = new javax.swing.JTextArea();
         salvarBtn = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        Date date2 = new Date();
+        SpinnerDateModel sm2 = new SpinnerDateModel(date2, null, null, Calendar.MINUTE);
+        spinner1 = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Novo compromisso");
@@ -78,9 +82,10 @@ public class NovoCompromissoView extends javax.swing.JFrame {
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Horário do compromisso:");
+        jLabel1.setText("Início:");
 
         spinner.setModel(sm);
+        spinner.setToolTipText("Horário de ínicio do compromisso");
         de = new JSpinner.DateEditor(spinner, "hh:mm a");
         spinner.setEditor(de);
 
@@ -100,25 +105,42 @@ public class NovoCompromissoView extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel2.setText("Final:");
+
+        spinner1.setModel(sm2);
+        spinner1.setToolTipText("Horário final do compromisso");
+        de2 = new JSpinner.DateEditor(spinner, "hh:mm a");
+        spinner1.setEditor(de2);
+
+        SimpleDateFormat format2 = ((JSpinner.DateEditor) spinner1.getEditor()).getFormat();
+
+        format2.applyPattern("HH:mm");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(46, 46, 46))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
-                        .addComponent(salvarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(64, 64, 64)
+                                .addComponent(salvarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(spinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,10 +150,14 @@ public class NovoCompromissoView extends javax.swing.JFrame {
                     .addComponent(jLabel1)
                     .addComponent(spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(spinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(salvarBtn)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -140,22 +166,27 @@ public class NovoCompromissoView extends javax.swing.JFrame {
     private void salvarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarBtnActionPerformed
 
         try {
-            String sql = "insert into compromisso(idUsuario, data_comp, hora, descricao, criado) values\n"
-                    + "(?,?,?,?, current_timestamp)";
+            String sql = "insert into compromisso(idUsuario, data_comp, hora_inicio, hora_final, descricao, criado) values\n"
+                    + "(?,?,?,?,?, current_timestamp)";
 
             connection = fabrica.getConnection(db.getDir(), user.getDir(), password.getDir());
             PreparedStatement stmt = connection.prepareStatement(sql);
 
-            String hora = de.getFormat().format(spinner.getValue());
+            String hora_inicio = de.getFormat().format(spinner.getValue());
+            String hora_final = de.getFormat().format(spinner1.getValue());
+            
             DateFormat formato = new SimpleDateFormat("HH:mm");
-            java.sql.Time horas = new java.sql.Time(formato.parse(hora).getTime());
-
+            
+            java.sql.Time horas_inicio = new java.sql.Time(formato.parse(hora_inicio).getTime());
+            java.sql.Time horas_final = new java.sql.Time(formato.parse(hora_final).getTime());
+            
             stmt.setInt(1, this.userLogado.getId());
 
             java.sql.Date sDate = convertUtilToSql(this.data);
             stmt.setDate(2, sDate);
-            stmt.setTime(3, horas);
-            stmt.setString(4, this.texto.getText());
+            stmt.setTime(3, horas_inicio);
+            stmt.setTime(4, horas_final);
+            stmt.setString(5, this.texto.getText());
 
             stmt.executeUpdate();
 
@@ -164,6 +195,7 @@ public class NovoCompromissoView extends javax.swing.JFrame {
 
             AgendaView.novoBtn.setEnabled(true);
             this.dispose();
+            JOptionPane.showMessageDialog(null, "Compromisso salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (ClassNotFoundException | SQLException | IOException | ParseException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível salvar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
@@ -219,9 +251,11 @@ public class NovoCompromissoView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton salvarBtn;
     private javax.swing.JSpinner spinner;
+    private javax.swing.JSpinner spinner1;
     private javax.swing.JTextArea texto;
     // End of variables declaration//GEN-END:variables
 

@@ -4,12 +4,11 @@ import control.Compromisso;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
-import control.Usuario;
 
 public class CompromissosTableModel extends AbstractTableModel {
 
     private List<Compromisso> compromissos;
-    private String[] colunas = new String[]{"Hora", "Descrição", "Criação", "Edição"};
+    private String[] colunas = new String[]{"Início", "Final", "Descrição", "Criação", "Edição"};
 
     /**
      * Creates a new instance of DevmediaTableModel
@@ -44,10 +43,12 @@ public class CompromissosTableModel extends AbstractTableModel {
         return String.class;
     }
 
+    //"Início", "Final", "Descrição", "Criação", "Edição"
     public void setValueAt(Compromisso aValue, int rowIndex) {
         Compromisso compromisso = compromissos.get(rowIndex);
 
-        compromisso.setHora(aValue.getHora());
+        compromisso.setHora_inicio(aValue.getHora_inicio());
+        compromisso.setHora_final(aValue.getHora_final());
         compromisso.setDescricao(aValue.getDescricao());
         compromisso.setCriado(aValue.getCriado());
         compromisso.setEditado(aValue.getEditado());
@@ -56,6 +57,7 @@ public class CompromissosTableModel extends AbstractTableModel {
         fireTableCellUpdated(rowIndex, 1);
         fireTableCellUpdated(rowIndex, 2);
         fireTableCellUpdated(rowIndex, 3);
+        fireTableCellUpdated(rowIndex, 4);
 
     }
 
@@ -65,12 +67,14 @@ public class CompromissosTableModel extends AbstractTableModel {
 
         switch (columnIndex) {
             case 0:
-                compromisso.setHora(aValue.toString());
+                compromisso.setHora_inicio(aValue.toString());
             case 1:
-                compromisso.setDescricao(aValue.toString());
+                compromisso.setHora_final(aValue.toString());
             case 2:
-                compromisso.setCriado(aValue.toString());
+                compromisso.setDescricao(aValue.toString());
             case 3:
+                compromisso.setCriado(aValue.toString());
+            case 4:
                 compromisso.setEditado(aValue.toString());
             default:
                 System.err.println("Índice da coluna inválido");
@@ -83,15 +87,18 @@ public class CompromissosTableModel extends AbstractTableModel {
         String valueObject = null;
         switch (columnIndex) {
             case 0:
-                valueObject = compromissoSelecionado.getHora();
+                valueObject = compromissoSelecionado.getHora_inicio();
                 break;
             case 1:
-                valueObject = compromissoSelecionado.getDescricao();
+                valueObject = compromissoSelecionado.getHora_final();
                 break;
             case 2:
-                valueObject = compromissoSelecionado.getCriado();
+                valueObject = compromissoSelecionado.getDescricao();
                 break;
             case 3:
+                valueObject = compromissoSelecionado.getCriado();
+                break;
+            case 4:
                 valueObject = compromissoSelecionado.getEditado();
                 break;
             default:
