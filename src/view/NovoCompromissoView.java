@@ -67,10 +67,15 @@ public class NovoCompromissoView extends javax.swing.JFrame {
         spinner = new javax.swing.JSpinner();
         jScrollPane1 = new javax.swing.JScrollPane();
         texto = new javax.swing.JTextArea();
-        jButton1 = new javax.swing.JButton();
+        salvarBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Novo compromisso");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText("Horário do compromisso:");
@@ -86,12 +91,12 @@ public class NovoCompromissoView extends javax.swing.JFrame {
         texto.setRows(5);
         jScrollPane1.setViewportView(texto);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/images/save.png"))); // NOI18N
-        jButton1.setText("Salvar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        salvarBtn.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        salvarBtn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/view/images/save.png"))); // NOI18N
+        salvarBtn.setText("Salvar");
+        salvarBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                salvarBtnActionPerformed(evt);
             }
         });
 
@@ -112,7 +117,7 @@ public class NovoCompromissoView extends javax.swing.JFrame {
                                 .addGap(46, 46, 46))))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(74, 74, 74)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(salvarBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -125,14 +130,14 @@ public class NovoCompromissoView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addComponent(salvarBtn)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void salvarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salvarBtnActionPerformed
 
         try {
             String sql = "insert into compromisso(idUsuario, data_comp, hora, descricao, criado) values\n"
@@ -153,19 +158,29 @@ public class NovoCompromissoView extends javax.swing.JFrame {
             stmt.setString(4, this.texto.getText());
 
             stmt.executeUpdate();
-            
+
             stmt.close();
             connection.close();
-            
+
             AgendaView.novoBtn.setEnabled(true);
             this.dispose();
-            
+
         } catch (ClassNotFoundException | SQLException | IOException | ParseException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível salvar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
 
             Logger.getLogger(NovoCompromissoView.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_salvarBtnActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        int output = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja sair?", "Sair", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (output == 0) {
+            AgendaView.novoBtn.setEnabled(true);
+            this.dispose();
+        } else if (output == 1) {
+
+        }
+    }//GEN-LAST:event_formWindowClosing
 
     /**
      * @param args the command line arguments
@@ -203,9 +218,9 @@ public class NovoCompromissoView extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton salvarBtn;
     private javax.swing.JSpinner spinner;
     private javax.swing.JTextArea texto;
     // End of variables declaration//GEN-END:variables

@@ -30,7 +30,6 @@ import model.CompromissosTableModel;
  * @author wesley.santos
  */
 public class AgendaView extends javax.swing.JFrame {
-    
 
     private Usuario userLogado;
     private static ArrayList<NivelAcesso> niveis = new ArrayList<>();
@@ -108,6 +107,11 @@ public class AgendaView extends javax.swing.JFrame {
         novoBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 novoBtnActionPerformed(evt);
+            }
+        });
+        novoBtn.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                novoBtnPropertyChange(evt);
             }
         });
 
@@ -191,10 +195,10 @@ public class AgendaView extends javax.swing.JFrame {
     }//GEN-LAST:event_calendarioPropertyChange
 
     private void novoBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_novoBtnActionPerformed
-        
+
         final NovoCompromissoView novoCompromisso = new NovoCompromissoView(calendario.getDate(), userLogado);
-            novoCompromisso.setVisible(rootPaneCheckingEnabled);
-            this.novoBtn.setEnabled(false);
+        novoCompromisso.setVisible(rootPaneCheckingEnabled);
+        this.novoBtn.setEnabled(false);
 //        try {
 //            carregaNiveisAcesso();
 //            final UsuarioNovoView novoUsuario = new UsuarioNovoView(niveis);
@@ -243,10 +247,20 @@ public class AgendaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Favor selecionar um compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             linha = tableCompromissos.getRowSorter().convertRowIndexToModel(linha);
-            System.out.println("h -> " + compromissos.get(linha).getHora() + " id -> " + compromissos.get(linha).getId());
+            //System.out.println("h -> " + compromissos.get(linha).getHora() + " id -> " + compromissos.get(linha).getId());
             excluirCompromisso(compromissos.get(linha).getId());
         }
     }//GEN-LAST:event_excluirBtnActionPerformed
+
+    private void novoBtnPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_novoBtnPropertyChange
+        try {
+            criaTable();
+            atualizaDadosTable();
+        } catch (ClassNotFoundException | SQLException | IOException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_novoBtnPropertyChange
 
     /**
      * @param args the command line arguments
@@ -280,11 +294,8 @@ public class AgendaView extends javax.swing.JFrame {
             public void run() {
                 try {
                     new AgendaView().setVisible(true);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
-                    Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
+                } catch (ClassNotFoundException | SQLException | IOException ex) {
+                    JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
                     Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
