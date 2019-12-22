@@ -54,7 +54,7 @@ public class AgendaView extends javax.swing.JFrame {
      */
     public AgendaView() throws ClassNotFoundException, SQLException, IOException {
         Usuario u = new Usuario();
-        u.setId(4);
+        u.setId(1);
         u.setUsuario("ozebe");
         this.userLogado = u;
         initComponents();
