@@ -49,6 +49,7 @@ public class AgendaView extends javax.swing.JFrame {
     public static INI user = new INI("db-config", "user");
     public static INI password = new INI("db-config", "password");
 
+    
     /**
      * Creates new form AgendaView
      */
