@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import control.Compromisso;
@@ -10,8 +5,6 @@ import control.ConnectionFactory;
 import control.INI;
 import control.NivelAcesso;
 import control.Usuario;
-import java.awt.Color;
-import java.awt.Component;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -28,12 +21,14 @@ import model.ColorirTabela;
 import model.CompromissosTableModel;
 
 /**
+ * Classe para criação do view do objeto Agenda
  *
- * @author wesley.santos
+ * @author Wesley Ozebe
+ * @version 1.02
  */
 public class AgendaView extends javax.swing.JFrame {
 
-    private Usuario userLogado;
+    private final Usuario userLogado;
     private static ArrayList<NivelAcesso> niveis = new ArrayList<>();
     public static ArrayList<Compromisso> compromissos = new ArrayList<>();
     private static Connection connection;
@@ -41,27 +36,30 @@ public class AgendaView extends javax.swing.JFrame {
 
     private static CompromissosTableModel modelo = new CompromissosTableModel();
     TableRowSorter<CompromissosTableModel> sorter = new TableRowSorter<CompromissosTableModel>(modelo);
-    //pega o caminho da base no arquivo .ini
-//    public static INI db;
-//    public static INI user;
-//    public static INI password;
-    public static INI db = new INI("db-config", "local");
-    public static INI user = new INI("db-config", "user");
-    public static INI password = new INI("db-config", "password");
 
-    
+    public static INI db;
+    public static INI user;
+    public static INI password;
+
     /**
-     * Creates new form AgendaView
+     * Cria um novo form AgendaView
+     *
+     * @param chave chave principal do arquivo .ini
+     * @param valor valor da chave principal que invoca o nome do banco do
+     * arquivo .ini
+     * @param usuario valor da chave usuario do arquivo .ini
+     * @param senha valor da chave senha do arquivo .ini
+     * @param userLogado usuarioLogado no sistema
      */
-    public AgendaView() throws ClassNotFoundException, SQLException, IOException {
-        Usuario u = new Usuario();
-        u.setId(1);
-        u.setUsuario("ozebe");
-        this.userLogado = u;
+    public AgendaView(String chave, String valor, String usuario, String senha, Usuario userLogado) throws ClassNotFoundException, SQLException, IOException {
+        this.userLogado = userLogado;
+        db = new INI(chave, valor);
+        user = new INI(chave, usuario);
+        password = new INI(chave, senha);
         initComponents();
         userLabel.setText(this.userLogado.getUsuario());
         //criaTable();
-        
+
     }
 
     /**
@@ -227,7 +225,6 @@ public class AgendaView extends javax.swing.JFrame {
 
     private void calendarioPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_calendarioPropertyChange
         try {
-            //rodar comando pegando o dia
             criaTable();
             atualizaDadosTable();
         } catch (ClassNotFoundException | SQLException | IOException ex) {
@@ -240,15 +237,6 @@ public class AgendaView extends javax.swing.JFrame {
         final NovoCompromissoView novoCompromisso = new NovoCompromissoView(calendario.getDate(), userLogado);
         novoCompromisso.setVisible(rootPaneCheckingEnabled);
         this.novoBtn.setEnabled(false);
-//        try {
-//            carregaNiveisAcesso();
-//            final UsuarioNovoView novoUsuario = new UsuarioNovoView(niveis);
-//            novoUsuario.setVisible(true);
-//            this.novoBtn.setEnabled(false);
-//        } catch (ClassNotFoundException | SQLException | IOException ex) {
-//            JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
-//            Logger.getLogger(UsuariosView.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }//GEN-LAST:event_novoBtnActionPerformed
 
     private void editarBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editarBtnActionPerformed
@@ -258,7 +246,7 @@ public class AgendaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Favor selecionar um compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             linha = tableCompromissos.getRowSorter().convertRowIndexToModel(linha);
-            System.out.println("h -> " + compromissos.get(linha).getHora_inicio()+ " id -> " + compromissos.get(linha).getId());
+            System.out.println("h -> " + compromissos.get(linha).getHora_inicio() + " id -> " + compromissos.get(linha).getId());
         }
 //        try {
 //            carregaNiveisAcesso();
@@ -288,7 +276,6 @@ public class AgendaView extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Favor selecionar um compromisso", "Erro", JOptionPane.ERROR_MESSAGE);
         } else {
             linha = tableCompromissos.getRowSorter().convertRowIndexToModel(linha);
-            //System.out.println("h -> " + compromissos.get(linha).getHora() + " id -> " + compromissos.get(linha).getId());
             excluirCompromisso(compromissos.get(linha).getId());
         }
     }//GEN-LAST:event_excluirBtnActionPerformed
@@ -306,43 +293,43 @@ public class AgendaView extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    new AgendaView().setVisible(true);
-                  
-                } catch (ClassNotFoundException | SQLException | IOException ex) {
-                    JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
-                    Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        });
-    }
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(AgendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        /* Create and display the form */
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    new AgendaView().setVisible(true);
+//
+//                } catch (ClassNotFoundException | SQLException | IOException ex) {
+//                    JOptionPane.showMessageDialog(null, "Não foi possível carregar!\n" + ex, "Erro", JOptionPane.ERROR_MESSAGE);
+//                    Logger.getLogger(AgendaView.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public static com.toedter.calendar.JCalendar calendario;
@@ -359,6 +346,12 @@ public class AgendaView extends javax.swing.JFrame {
     private javax.swing.JLabel userLabel;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Método para criação da tabela, onde todos os dados da tabela sao
+     * excluidos e requisitados ao banco novamente, preenchendo o model
+     *
+     * @author Wesley Ozebe
+     */
     public void criaTable() throws ClassNotFoundException, SQLException, IOException {
         connection = fabrica.getConnection(db.getDir(), user.getDir(), password.getDir());
 
@@ -396,6 +389,13 @@ public class AgendaView extends javax.swing.JFrame {
         connection.close();
     }
 
+    /**
+     * Método para atualizacao dos dados da tabela, onde os dados no modelo sao
+     * removidos e inseridos novamente utilizando como base os objetos no
+     * arrayList de compromissos
+     *
+     * @author Wesley Ozebe
+     */
     public static void atualizaDadosTable() {
         while (modelo.getRowCount() > 0) {
             for (int i = 0; i < modelo.getRowCount(); i++) {
@@ -408,15 +408,29 @@ public class AgendaView extends javax.swing.JFrame {
             if (c.getData().equals(sDate.toString())) {
                 modelo.addCompromisso(c);
             }
-
         }
     }
 
+    /**
+     * Método para conversão de um objeto do tipo Date para um do tipo
+     * java.sql.Date para persistir no banco de dados
+     *
+     * @author Wesley Ozebe
+     * @param uDate java.util.Date - objeto do tipo Date a ser convertido
+     * @return java.sql.Date - valor convertido
+     */
     private static java.sql.Date convertUtilToSql(java.util.Date uDate) {
         java.sql.Date sDate = new java.sql.Date(uDate.getTime());
         return sDate;
     }
 
+    /**
+     * Método para conversão de um Timestamp para uma string
+     *
+     * @author Wesley Ozebe
+     * @param t Timestamp - timestamp a ser convertido
+     * @return String - timeStamp converido para o formato dd-MM-yyyy HH:mm:ss
+     */
     private static String formataTimestamp(Timestamp t) {
         if (t != null) {
             SimpleDateFormat formatador = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -427,6 +441,12 @@ public class AgendaView extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Método para exclusão de um compromisso utilizando-se o id passado
+     *
+     * @author Wesley Ozebe
+     * @param id int - id do compromisso
+     */
     private void excluirCompromisso(int id) {
         try {
             connection = fabrica.getConnection(db.getDir(), user.getDir(), password.getDir());
@@ -447,7 +467,13 @@ public class AgendaView extends javax.swing.JFrame {
 
         }
     }
-
+    
+        /**
+     * Método para carregar os niveis de acesso, preenchendo um objeto com nome
+     * niveis
+     *
+     * @author Wesley Ozebe
+     */
     public static void carregaNiveisAcesso() throws ClassNotFoundException, SQLException, IOException {
         connection = fabrica.getConnection(db.getDir(), user.getDir(), password.getDir());
         PreparedStatement stmt = connection.prepareStatement("select * from nivelAcesso order by nivelAcesso.id");

@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package view;
 
 import control.ConnectionFactory;
@@ -27,10 +23,10 @@ import static view.AgendaView.db;
 import static view.AgendaView.password;
 import static view.AgendaView.user;
 
-/**
- *
- * @author wesley.santos
- */
+/**Classe para criação de um compromisso
+* @author Wesley Ozebe
+* @version 1.0
+*/
 public class NovoCompromissoView extends javax.swing.JFrame {
 
     private Date data;
@@ -43,8 +39,8 @@ public class NovoCompromissoView extends javax.swing.JFrame {
     /**
      * Creates new form NovoCompromissoView
      *
-     * @param data
-     * @param userLogado
+     * @param data Data - data que o compromisso sera inserido
+     * @param userLogado Usuario - usuario que encontra-se logado no sistema
      */
     public NovoCompromissoView(Date data, Usuario userLogado) {
         this.data = data;

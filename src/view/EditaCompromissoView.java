@@ -5,10 +5,10 @@
  */
 package view;
 
-/**
- *
- * @author wesley.santos
- */
+/**Classe para edição de um compromisso
+* @author Wesley Ozebe
+* @version 1.0
+*/
 public class EditaCompromissoView extends javax.swing.JFrame {
 
     /**
